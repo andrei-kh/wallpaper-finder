@@ -8,9 +8,7 @@ from PyQt5.QtWidgets import (QMainWindow,
 
 from image_graphics_view import ImageGraphicsView
 from bottom_bar_layout import BottomBarLayout
-from settings import (MAIN_LAYOUT_MARGINS,
-                      MAIN_LAYOUT_SPACING,
-                      MAIN_WINDOW_STYLE_SHEET)
+from initializer import Config
 
 import os
 
@@ -33,8 +31,8 @@ class ImageViewerBase(QMainWindow):
         # Layout stuff
         self.mainWidget = QWidget(self)
         self.mainLayout = QVBoxLayout(self.mainWidget)
-        self.mainLayout.setContentsMargins(*MAIN_LAYOUT_MARGINS)
-        self.mainLayout.setSpacing(MAIN_LAYOUT_SPACING)
+        self.mainLayout.setContentsMargins(*Config.MAIN_LAYOUT_MARGINS)
+        self.mainLayout.setSpacing(Config.MAIN_LAYOUT_SPACING)
         self.mainLayout.addWidget(self.imageGraphicsView)
         self.mainLayout.addLayout(self.bottomBarLayout)
         self.mainWidget.setLayout(self.mainLayout)
@@ -54,7 +52,7 @@ class ImageViewerBase(QMainWindow):
         self.setWindowFlags(Qt.CustomizeWindowHint)
 
         # Styles(borders, background).
-        self.setStyleSheet(MAIN_WINDOW_STYLE_SHEET)
+        self.setStyleSheet(Config.MAIN_WINDOW_STYLE_SHEET)
 
         # All button actions
         self.createShortcuts()
@@ -97,28 +95,40 @@ class ImageViewerBase(QMainWindow):
 
 # Image loading and setting
 
-    def getCurrentImagePath(self) -> None:
+    def getCurrentImagePath(self) -> str:
+        """
+        Return path to current image.
+        """
         return self.pathsToImages[self.currentImageIndex]
 
-    def loadImageFromFile(self, filePath=None) -> None:
+    def loadImageFromFile(self, filePath=None) -> QImage:
+        """
+        Loads located at filePath.
+        """
         if not os.path.isfile(filePath):
             raise FileNotFoundError
 
-        image = QImage(filePath)
-        self.imageGraphicsView.setImage(image)
+        return QImage(filePath)
 
     def setLoadedImage(self) -> None:
+        """
+        Loads and then displays current image.
+        """
         self.imageGraphicsView.clearImage()
 
         filePath = self.getCurrentImagePath()
-        self.updateStatusBarLabel(filePath)
 
         if self.usingPicker():
             self.updatePickerBar()
 
-        self.loadImageFromFile(filePath)
+        image = self.loadImageFromFile(filePath)
+        self.imageGraphicsView.setImage(image)
+        self.updateBottomBar(filePath)
 
     def setImagePaths(self, filePaths=None) -> None:
+        """
+        Sets paths to images. Then displays first image.
+        """
         if filePaths is None:
             filePaths, _ = QFileDialog.getOpenFileNames(self, "Open image files.")
 
@@ -131,35 +141,62 @@ class ImageViewerBase(QMainWindow):
 # Changing Image
 
     def nextImage(self) -> None:
+        """
+        Switches screen to the next image in the imagePaths.
+        """
         if self.totalImages > 1:
             self.currentImageIndex = (self.currentImageIndex + 1) % self.totalImages
             self.setLoadedImage()
 
     def previousImage(self) -> None:
+        """
+        Switches screen to the previous image in the imagePaths.
+        """
         if self.totalImages > 1:
             self.currentImageIndex = (self.currentImageIndex - 1) % self.totalImages
             self.setLoadedImage()
 
-    def updateStatusBarLabel(self, imagePath) -> None:
-        filename = os.path.split(imagePath)[-1]
-        text = f"{self.currentImageIndex + 1}/{self.totalImages} | {filename}"
-        self.bottomBarLayout.changeStatus(text)
+    def updateBottomBar(self, imagePath) -> None:
+        """
+        Updates bottom bar.
+        """
+        fileName = os.path.split(imagePath)[-1]
+        self.bottomBarLayout.changeNametext(fileName)
+
+        w, h = self.imageGraphicsView.getPixmapSize()
+        imageSize = f"{w}x{h}"
+        self.bottomBarLayout.changeResolutionText(imageSize)
+
+        text = f"{self.currentImageIndex + 1}/{self.totalImages}"
+        self.bottomBarLayout.changeCounterText(text)
 
 # Image Picking
 
     def usingPicker(self) -> bool:
+        """
+        Checks if image picker is needed.
+        """
         return self.pickedImages is not None
 
     def imageIsPicked(self, imagePath) -> bool:
+        """
+        Checks if displayed image is picked.
+        """
         return imagePath in self.pickedImages
 
     def updatePickerBar(self) -> None:
+        """
+        Updates picker bar.
+        """
         if self.imageIsPicked(self.getCurrentImagePath()):
             self.bottomBarLayout.setPickerAsPicked()
         else:
             self.bottomBarLayout.setPickerAsUnPicked()
 
     def tickCurrentImage(self) -> None:
+        """
+        Updates current image in picked images and picker bar.
+        """
         currentImagePath = self.getCurrentImagePath()
 
         if self.imageIsPicked(currentImagePath):

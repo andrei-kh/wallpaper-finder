@@ -1,0 +1,38 @@
+{
+    "main_window": {
+        "main_layout_margins": [
+            0,
+            4,
+            0,
+            0
+        ],
+        "main_layout_spacing": 0,
+
+        "background": "black",
+        "border_size": 6,
+        "border_color": "white"
+    },
+
+    "bottom_bar": {
+        "bottom_bar_margins": [
+            0,
+            0,
+            0,
+            0
+        ],
+        "bottom_bar_spacing": 0,
+        "bottom_bar_height": 26,
+
+
+        "picker_symbol": "🗹",
+        "picker_color": "black",
+
+        "background": "gray",
+        "top_border_size": 2,
+        "top_border_color": "white",
+
+        "font_size": "12pt",
+        "font_weight": "bold",
+        "font_family": "Terminal"
+    }
+}

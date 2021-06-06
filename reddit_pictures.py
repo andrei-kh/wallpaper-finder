@@ -2,10 +2,12 @@ import json
 import praw
 from PIL import Image
 import requests
+from pathlib import Path
 
+APP_FOLDER_PATH = str(Path(__file__).parent.absolute())
 
 def load_credentials():
-    with open('./.secret/credentials.json') as f:
+    with open(APP_FOLDER_PATH + '/.secret/credentials.json') as f:
         return json.load(f)
 
 
@@ -19,5 +21,5 @@ reddit = praw.Reddit(client_id=params['client_id'],
 subreddit = reddit.subreddit('wallpaper')
 for i, submission in enumerate(subreddit.top('month', limit=4)):
     url = submission.url
-    im = Image.open(requests.get(url, stream=True).raw
-    im.show()
+    im = Image.open((requests.get(url, stream=True).raw))
+    im.save('pic' + str(i) + '.png')

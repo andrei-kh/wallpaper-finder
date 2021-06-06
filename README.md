@@ -7,9 +7,9 @@ Finds wallpapers on reddit and saves them.
   - [ ] Image checks
   - [ ] Settings
 - General things
-  - [ ] Image viewer
+  - [x] Image viewer
     - [x] Clean up code 
     - [x] Ability to pick pictures
-    - [ ] Add json for settings
-    - [ ] Clean up once again
+    - [x] Add json for settings
   - [ ] Image comparer
+  - [ ] libpng error

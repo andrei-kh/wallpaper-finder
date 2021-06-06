@@ -2,15 +2,20 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QGraphicsScene, QGraphicsView
 from PyQt5.QtGui import QPixmap
 
-from settings import IMAGE_GRAPHICS_STYLE_SHEET
+from initializer import Config
+from typing import Optional
 
 
 class ImageGraphicsView(QGraphicsView):
+    """
+    Class that displays the pictures.
+    """
+
     def __init__(self):
         QGraphicsView.__init__(self)
 
         # Setting style sheet
-        self.setStyleSheet(IMAGE_GRAPHICS_STYLE_SHEET)
+        self.setStyleSheet(Config.IMAGE_GRAPHICS_STYLE_SHEET)
 
         # Image is displayed here.
         self.scene = QGraphicsScene()
@@ -28,25 +33,35 @@ class ImageGraphicsView(QGraphicsView):
 
 # Image Displaying
 
-    def hasImage(self):
+    def hasImage(self) -> bool:
         """
         Chescks if image is shown.
         """
         return self._pixmapHandle is not None
 
-    def clearImage(self):
+    def clearImage(self) -> None:
+        """
+        Clears displayed image.
+        """
         if self.hasImage():
             self.scene.removeItem(self._pixmapHandle)
             self._pixmapHandle = None
 
-    def updateView(self):
+    def updateView(self) -> None:
+        """
+        Updates image size to fit the scene.
+        """
         if not self.hasImage():
             return
 
         self.fitInView(self.sceneRect(), self.aspectRatioMode)
 
-    def setImage(self, image):
+    def setImage(self, image) -> None:
+        """
+        Sets scene image.
+        """
         pixmap = QPixmap.fromImage(image)
+        self.setSceneRect(0, 0, pixmap.width(), pixmap.height())
 
         if self.hasImage():
             self._pixmapHandle.setPixmap(pixmap)
@@ -54,3 +69,14 @@ class ImageGraphicsView(QGraphicsView):
             self._pixmapHandle = self.scene.addPixmap(pixmap)
 
         self.updateView()
+
+    def getPixmapSize(self) -> Optional[tuple]:
+        """
+        Returns current image size.
+        """
+        if self.hasImage():
+            w = self._pixmapHandle.pixmap().size().width()
+            h = self._pixmapHandle.pixmap().size().height()
+            return w, h
+
+        return None
