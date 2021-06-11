@@ -2,7 +2,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QGraphicsScene, QGraphicsView
 from PyQt5.QtGui import QPixmap
 
-from initializer import Config
+from .initializer import Config
 from typing import Optional
 
 

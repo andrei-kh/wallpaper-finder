@@ -1,7 +1,7 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QHBoxLayout, QLabel
 
-from initializer import Config
+from .initializer import Config
 
 
 class BottomBarLayout(QHBoxLayout):
@@ -24,7 +24,7 @@ class BottomBarLayout(QHBoxLayout):
         self.counterLabel = QLabel()
         self.counterLabel.setFixedHeight(Config.BOTTOM_BAR_HEIGHT)
         self.counterLabel.setStyleSheet(Config.COUNTER_LABEL_STYLE_SHEET)
-        self.counterLabel.setAlignment(Qt.AlignRight | Qt.AlignBottom)
+        self.counterLabel.setAlignment(Qt.AlignRight)
 
         # Label for image resolution.
         self.resolutionLabel = QLabel()

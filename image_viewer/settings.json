@@ -21,7 +21,7 @@
             0
         ],
         "bottom_bar_spacing": 0,
-        "bottom_bar_height": 26,
+        "bottom_bar_height": 28,
 
 
         "picker_symbol": "🗹",
@@ -31,8 +31,8 @@
         "top_border_size": 2,
         "top_border_color": "white",
 
-        "font_size": "12pt",
+        "font_size": "11",
         "font_weight": "bold",
-        "font_family": "Terminal"
+        "font_family": "Consolas"
     }
 }
