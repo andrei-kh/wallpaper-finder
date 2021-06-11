@@ -1,0 +1,12 @@
+{
+    "credentials_path": ".secret/credentials.json",
+    "save_folder_path": "./temp",
+    "temp_folder_path": "./temp",
+    "subreddits": [
+        "wallpaper"
+    ],
+    "sort_type": "top",
+    "limit": 10,
+    "time_filter": "month",
+    "remove_duplicates": false
+}
