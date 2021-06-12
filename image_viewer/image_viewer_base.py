@@ -59,49 +59,51 @@ class ImageViewerBase(QMainWindow):
         self.setStyleSheet(Config.MAIN_WINDOW_STYLE_SHEET)
 
         # All button actions
-        self.createShortcuts()
+        self.connectShortcuts()
 
         # Sets first image
         self.setImagePaths(pathsToImages)
 
 # Initializes shortcuts
 
-    def createShortcuts(self) -> None:
+    def connectShortcuts(self) -> None:
         """
         Initializes all shotcuts.
 
         """
         # Close shortcuts
-        self.shotcutClose1 = QShortcut(QKeySequence('Esc'), self)
+        self.shotcutClose1 = QShortcut(QKeySequence(Config.CLOSE_SHORTCUT1), self)
         self.shotcutClose1.activated.connect(self.close)
 
-        self.shotcutClose2 = QShortcut(QKeySequence('Ctrl+Q'), self)
+        self.shotcutClose2 = QShortcut(QKeySequence(Config.CLOSE_SHORTCUT2), self)
         self.shotcutClose2.activated.connect(self.close)
 
         # Image changing shortcuts
-        self.shortcutPrevious = QShortcut(QKeySequence('Left'), self)
+        self.shortcutPrevious = QShortcut(QKeySequence(Config.PREVIOUS_IMAGE_SHORTCUT), self)
         self.shortcutPrevious.activated.connect(self.previousImage)
 
-        self.shortcutNext = QShortcut(QKeySequence('Right'), self)
+        self.shortcutNext = QShortcut(QKeySequence(Config.NEXT_IMAGE_SHORTCUT), self)
         self.shortcutNext.activated.connect(self.nextImage)
 
         # Open files shortcut
-        self.shortcutOpen = QShortcut(QKeySequence('Ctrl+O'), self)
+        self.shortcutOpen = QShortcut(QKeySequence(Config.OPEN_FILES_SHORTCUT), self)
         self.shortcutOpen.activated.connect(self.setImagePaths)
 
         # Maximized screen shortcut
-        self.shortcutMaximize = QShortcut(QKeySequence("Ctrl+F"), self)
+        self.shortcutMaximize = QShortcut(QKeySequence(Config.MAXIMIZE_SHORTCUT), self)
         self.shortcutMaximize.activated.connect(self.showMaximized)
 
         # Reload window shortcut
-        self.shortcutReload = QShortcut(QKeySequence("Ctrl+R"), self)
+        self.shortcutReload = QShortcut(QKeySequence(Config.RELOAD_SHORTCUT), self)
         self.shortcutReload.activated.connect(self.reloadWindow)
 
         # Picker shortcuts
-        self.shortcutPick = QShortcut(QKeySequence('Alt+X'), self)
+        self.shortcutPick = QShortcut(QKeySequence(Config.PICK_SHORTCUT), self)
+        self.shortcutPickAll = QShortcut(QKeySequence(Config.PICK_ALL_SHORTCUT), self)
 
         if self.usingPicker():
             self.shortcutPick.activated.connect(self.tickCurrentImage)
+            self.shortcutPickAll.activated.connect(self.tickAll)
 
 # Exits app with the exit code = EXIT_CODE_REBOOT
 
@@ -220,6 +222,13 @@ class ImageViewerBase(QMainWindow):
         else:
             self.pickedImages.add(currentImagePath)
 
+        self.updatePickerBar()
+
+    def tickAll(self) -> None:
+        """
+        Ticks all images, updates bar.
+        """
+        self.pickedImages = self.pathsToImages.copy()
         self.updatePickerBar()
 
 # Events

@@ -1,11 +1,6 @@
 {
     "main_window": {
-        "main_layout_margins": [
-            0,
-            4,
-            0,
-            0
-        ],
+        "main_layout_margins": [0, 4, 0, 0],
         "main_layout_spacing": 0,
 
         "background": "black",
@@ -14,12 +9,7 @@
     },
 
     "bottom_bar": {
-        "bottom_bar_margins": [
-            0,
-            0,
-            0,
-            0
-        ],
+        "bottom_bar_margins": [0, 0, 0, 0],
         "bottom_bar_spacing": 0,
         "bottom_bar_height": 28,
 
@@ -34,5 +24,22 @@
         "font_size": "11",
         "font_weight": "bold",
         "font_family": "Consolas"
+    },
+
+    "shortcuts":{
+        "close_shortcut1": "ESC",
+        "close_shortcut2": "Ctrl+Q",
+
+        "previous_image_shortcut": "Left",
+        "next_image_shortcut": "Right",
+
+        "open_files_shortcut": "Ctrl+O",
+
+        "maximize_shortcut": "Ctrl+F",
+
+        "reload_shortcut": "Ctrl+R",
+        
+        "pick_shortcut": "Alt+X",
+        "pick_all_shortcut": "Alt+A"
     }
 }

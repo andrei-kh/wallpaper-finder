@@ -26,7 +26,7 @@ Make sure you have a __reddit account__ and __python 3.x installed__.
    
      2. Fill out the required details, select __script__ option and click __create an application__
         
-        ![Reddit application](https://imgur.com/OIvQUQs.png)
+        ![Reddit application](https://imgur.com/XJMpUaA.png)
 
      3. __script for personal use__ and __secret__ tokens are used to connect to reddit api.
         
@@ -91,7 +91,7 @@ Make sure you have a __reddit account__ and __python 3.x installed__.
         "remove_duplicates": false                      // check for duplicates
     }
     ```
-2. After executing script will load the images:
+2. After executing script will load the images to __"temp_folder"__:
  
    ![Image loading](https://imgur.com/SWpOmzt.png)
 
@@ -109,6 +109,7 @@ Make sure you have a __reddit account__ and __python 3.x installed__.
    | __Left arrow__    | previous image  |
    | __ESC or CTRL+Q__ | close viewer    |
    | __ALT+X__         | pick image      |
+   | __ALT+A__         | pick all images |
    | __CTRL+O__        | open files      |
    | __CTRL+F__        | maximize window |
    | __CTRL+R__        | reload window   |
@@ -144,6 +145,23 @@ Image viewer has it's own ```settings.json``` at ```wallpaper-finder/image_viewe
         "font_size": "11",                   // Bottom bar font
         "font_weight": "bold",               // Bottom bar font weight
         "font_family": "Consolas"            // Bottom bar font family
+    },
+
+    "shortcuts":{
+        "close_shortcut1": "ESC",            // First shortcut to close window
+        "close_shortcut2": "Ctrl+Q",         // Second shortcut to close window
+
+        "previous_image_shortcut": "Left",   // Shortcut to go to previous image
+        "next_image_shortcut": "Right",      // Shortcut to go to next image
+
+        "open_files_shortcut": "Ctrl+O",     // Shortcut to open files
+
+        "maximize_shortcut": "Ctrl+F",       // Shortcut to maximize window
+
+        "reload_shortcut": "Ctrl+R",         // Shortcut to reload window
+        
+        "pick_shortcut": "Alt+X",            // Shortcut to pick image
+        "pick_all_shortcut": "Alt+A"         // Shortcut to pick all images
     }
 }
 ```

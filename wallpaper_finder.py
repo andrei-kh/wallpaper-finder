@@ -10,7 +10,7 @@ import shutil
 from urllib.parse import urlparse
 import requests
 
-from progress.bar import Bar
+from progress.bar import Bar, PixelBar
 
 from typing import Optional
 
@@ -155,7 +155,7 @@ class RedditPictures:
         files_existed = []
 
         if paths:
-            progress_bar = Bar("Moving picked images:", max=len(paths))
+            progress_bar = Bar("Moving picked images: ", fill="=", max=len(paths), bar_prefix="[", bar_suffix="]")
 
             for path in paths:
                 try:
@@ -184,7 +184,7 @@ class RedditPictures:
         Returns list of paths without imagess from 'folder'.
         """
         bar_lenght = len(images)
-        progress_bar = Bar("Checking if duplicate:", max=bar_lenght)
+        progress_bar = PixelBar("Checking if duplicated:", max=bar_lenght)
 
         duplicates = []
         for image_path in images:

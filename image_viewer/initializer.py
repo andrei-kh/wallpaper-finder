@@ -4,6 +4,7 @@ import os
 SETTINGS_FILE = "settings.json"
 MAIN_WINDOW_SETTINGS = "main_window"
 BOTTOM_BAR_SETTINGS = "bottom_bar"
+SHORTCUTS_SETTINGS = "shortcuts"
 
 
 class Config:
@@ -24,6 +25,17 @@ class Config:
     RESOLUTION_LABEL_STYLE_SHEET = None
     PICKER_BAR_STYLE_SHEET = None
 
+    # Shortcuts
+    CLOSE_SHORTCUT1 = None
+    CLOSE_SHORTCUT2 = None
+    PREVIOUS_IMAGE_SHORTCUT = None
+    NEXT_IMAGE_SHORTCUT = None
+    OPEN_FILES_SHORTCUT = None
+    MAXIMIZE_SHORTCUT = None
+    RELOAD_SHORTCUT = None
+    PICK_SHORTCUT = None
+    PICK_ALL_SHORTCUT = None
+
     # Loads json file.
 
     def _load_settings():
@@ -38,6 +50,7 @@ class Config:
         user_settings = cls._load_settings()
         main_window_settings = user_settings[MAIN_WINDOW_SETTINGS]
         bottom_bar_settings = user_settings[BOTTOM_BAR_SETTINGS]
+        shortcuts = user_settings[SHORTCUTS_SETTINGS]
 
         cls.MAIN_LAYOUT_MARGINS = main_window_settings["main_layout_margins"]
         cls.MAIN_LAYOUT_SPACING = main_window_settings["main_layout_spacing"]
@@ -148,6 +161,16 @@ class Config:
                 pColor=bottom_bar_settings["picker_color"]
             )
         )
+
+        cls.CLOSE_SHORTCUT1 = shortcuts["close_shortcut1"]
+        cls.CLOSE_SHORTCUT2 = shortcuts["close_shortcut2"]
+        cls.PREVIOUS_IMAGE_SHORTCUT = shortcuts["previous_image_shortcut"]
+        cls.NEXT_IMAGE_SHORTCUT = shortcuts["next_image_shortcut"]
+        cls.OPEN_FILES_SHORTCUT = shortcuts["open_files_shortcut"]
+        cls.MAXIMIZE_SHORTCUT = shortcuts["maximize_shortcut"]
+        cls.RELOAD_SHORTCUT = shortcuts["reload_shortcut"]
+        cls.PICK_SHORTCUT = shortcuts["pick_shortcut"]
+        cls.PICK_ALL_SHORTCUT = shortcuts["pick_all_shortcut"]
 
 
 # applys settings on first import.
