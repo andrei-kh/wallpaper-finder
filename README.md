@@ -6,33 +6,50 @@ A simple app that lets you download wallpapers from reddit.
 
 - [🖼 WALLPAPER FINDER](#-wallpaper-finder)
   - [Installation](#installation)
+    - [Without reddit api](#without-reddit-api)
+    - [With reddit api](#with-reddit-api)
   - [Usage](#usage)
     - [Image viewer controls:](#image-viewer-controls)
   - [Image Viewer settings](#image-viewer-settings)
 
 ## Installation
-Make sure you have a __reddit account__ and __python 3.x installed__.
+Make sure you have __python 3.x__ installed.<br>
+You can use it with api or without. I did not notice any change between them.<br> 
+Using api requries __api keys__.
 
-1. Clone and install requirements
-    ```sh
-    > git clone https://github.com/andreywastaken/wallpaper-finder.git
-    > cd wallpaper-finder
+### Without reddit api
+If you don't want to use reddit api. Just clone repository and install __requirements.txt__:
+
+```sh
+> git clone https://github.com/andreywastaken/wallpaper-finder.git
+> cd wallpaper-finder
+
+> pip install -r requirements.txt
+```
+### With reddit api
+<details>
+    <summary markdown="span"> Click to view </summary>
+
+Firstly you need to clone repository and install __requirements_api.txt__:
+```sh
+> git clone https://github.com/andreywastaken/wallpaper-finder.git
+> cd wallpaper-finder
+
+> pip install -r requirements_api.txt
+```
+
+Now you need to get reddit api access (__you need to have reddit account__)
+  1. Go to [reddit app preferences](https://www.reddit.com/prefs/apps) and click __create another app...__
     
-    > pip install -r requirements.txt
-    ```
-
-2. Get reddit api access (you need to have reddit account)
-     1. Go to [reddit app preferences](https://www.reddit.com/prefs/apps) and click __create another app...__
-   
-     2. Fill out the required details, select __script__ option and click __create an application__
+  2. Fill out the required details, select __script__ option and click __create an  application__
         
         ![Reddit application](https://imgur.com/XJMpUaA.png)
 
-     3. __script for personal use__ and __secret__ tokens are used to connect to reddit api.
-        
+  3. __script for personal use__ and __secret__ tokens are used to connect to reddit    api.
+
         ![Personal and Secret](https://imgur.com/sw6W1Qx.png)
 
-     4. Create in __.secret__ create __credentials.json__ file like that:
+  4. Create in __.secret__ create __credentials.json__ file like that:
         ```javascript 
         {
         "client_id": "aB1cdeFghI23JK",               // short key goes here
@@ -41,10 +58,7 @@ Make sure you have a __reddit account__ and __python 3.x installed__.
         "password": "<your reddit password>"         // reddit password goes here
         }
         ```
-     5. Now you finished with installation. For the test you can execute:
-        ```python
-        python wallpaper_finder.py
-        ```
+</details>
 
 ## Usage
 1. Before running
