@@ -22,10 +22,10 @@ USER_AGENT = "Wallpaper finder"
 SETTINGS_PATH = "./settings.json"
 
 
-class RedditPictures:
+class RedditPicturesTest:
     def __init__(self, credentials, save_folder, temp_folder="temp",
                  subreddits=["wallpaper"], sort_type="top", limit=10,
-                 time_filter="month", remove_duplicates=False) -> None:
+                 time_filter="month", remove_duplicates=False, use_api=False) -> None:
         """
         Used to parse and save images from reddit.
         """
@@ -36,6 +36,7 @@ class RedditPictures:
         self.save_folder = save_folder
 
         self.check_for_duplicates = remove_duplicates
+        self.use_api = use_api
 
         self.reddit = praw.Reddit(client_id=credentials['client_id'],
                                   client_secret=credentials['api_key'],
@@ -80,9 +81,9 @@ class RedditPictures:
             image_url = media_metadata[item['media_id']]['s']['u']
             self.process_image_url(image_url)
 
-    def get_submissions(self, subreddit_name) -> Optional[praw.models.listing.generator.ListingGenerator]:
+    def get_submissions_api(self, subreddit_name) -> Optional["praw.models.listing.generator.ListingGenerator"]:
         """
-        Chooses submissions.
+        Get submissions from 'subreddit_name' with praw.
         """
 
         subreddit = self.reddit.subreddit(subreddit_name)
@@ -98,6 +99,48 @@ class RedditPictures:
 
         return None
 
+    def get_subreddit_no_api(self, subbreddit_name) -> dict:
+        """
+        Gets subreddit from 'subreddit_name' without using praw.
+        """
+        base_url = f"https://www.reddit.com/r/{subbreddit_name}/{self.sort_type}.json?limit={self.limit}"
+
+        if self.sort_type == "top":
+            base_url += f"&t={self.time_filter}"
+
+        request = requests.get(base_url, headers={'User-agent': USER_AGENT})
+
+        return request.json()
+
+    def get_submissions_no_api(self, subbreddit_name) -> list:
+        """
+        Gets submissions from 'subreddit_name' without using praw.
+        """
+        subreddit = self.get_subreddit_no_api(subbreddit_name)
+
+        submissions = []
+        for post in subreddit['data']['children']:
+            submission = argparse.Namespace()
+            submission.url = post['data']['url']
+            submission.is_gallery = post['data'].get('is_gallery', False)
+
+            if submission.is_gallery:
+                submission.gallery_data = post['data']['gallery_data']
+                submission.media_metadata = post['data']['media_metadata']
+
+            submissions.append(submission)
+
+        return submissions
+
+    def get_submissions(self, subbreddit_name) -> Optional[list]:
+        """
+        Gets 'self.limit' submissions from 'subreddit_name'.
+        """
+        if self.use_api:
+            return self.get_submissions_api(subbreddit_name)
+        else:
+            return self.get_submissions_no_api(subbreddit_name)
+
     def load_pictures(self, subreddits) -> None:
         """
         Loads images from subreddits.
@@ -105,7 +148,7 @@ class RedditPictures:
         for subreddit in subreddits:
             submissions = self.get_submissions(subreddit)
 
-            progress_bar = Bar(f"Loaded images from r/{subreddit}:", max=submissions.limit)
+            progress_bar = Bar(f"Loaded images from r/{subreddit}:", max=self.limit)
 
             for submission in submissions:
                 if not self.process_image_url(submission.url):
@@ -113,7 +156,7 @@ class RedditPictures:
                         if submission.is_gallery:
                             self.process_gallery(submission)
                     except AttributeError:
-                        print("submission:"
+                        print("\nsubmission:"
                               "\n{}\n"
                               "dosen't have images with allowed extentions\n".format(submission.url))
 
@@ -175,7 +218,6 @@ class RedditPictures:
 
             # if we got already existing files -> print them
             if files_existed:
-                print()
                 for path in files_existed:
                     print(f"File {path} already exists. Did not move.")
 
@@ -282,8 +324,17 @@ def arguments() -> dict:
         action="store_true",
         default=None,
         dest="remove_duplicates",
-        help="Script would not save duplicates of images in save-folder. "
-             "If you have a lot of images you will die before it finishes."
+        help="If present script would not save duplicates of images in save-folder. "
+        "If you have a lot of images you will die before it finishes."
+    )
+
+    parser.add_argument(
+        "-ua",
+        "--use-api",
+        action="store_true",
+        default=None,
+        dest="use_api",
+        help="If present script would use 'praw' to parse reddit. Needs 'credentials.json' to be present."
     )
 
     parser.add_argument(
@@ -335,14 +386,15 @@ if __name__ == "__main__":
     with open(settings["credentials_path"]) as f:
         credentials = json.load(f)
 
-    redditPictures = RedditPictures(credentials=credentials,
-                                    save_folder=settings["save_folder_path"],
-                                    temp_folder=settings["temp_folder_path"],
-                                    subreddits=settings["subreddits"],
-                                    sort_type=settings["sort_type"],
-                                    limit=settings["limit"],
-                                    time_filter=settings["time_filter"],
-                                    remove_duplicates=settings["remove_duplicates"])
+    redditPictures = RedditPicturesTest(credentials=credentials,
+                                        save_folder=settings["save_folder_path"],
+                                        temp_folder=settings["temp_folder_path"],
+                                        subreddits=settings["subreddits"],
+                                        sort_type=settings["sort_type"],
+                                        limit=settings["limit"],
+                                        time_filter=settings["time_filter"],
+                                        remove_duplicates=settings["remove_duplicates"],
+                                        use_api=settings["use_api"])
     redditPictures.run()
 
     print("Done...")

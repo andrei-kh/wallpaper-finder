@@ -70,6 +70,8 @@ Make sure you have a __reddit account__ and __python 3.x installed__.
       -rd, --remove-duplicates
                             Script would not save duplicates of images in save-folder. 
                             If you have a lot of images you will die before it finishes.
+       -ua, --use-api       If present script would use 'praw' to parse reddit. 
+                            Needs 'credentials.json' to be present.
       --credentials [PATH]  Folder with credentials.json.
       --save-folder [PATH]  Folder where immages would be saved.
       --temp-folder [PATH]  Temporary folder to save images. 
@@ -79,7 +81,6 @@ Make sure you have a __reddit account__ and __python 3.x installed__.
     Also, you can edit __settings.json__, but values passed as a parameter     __override__ values from __settings.json__
     ```javascript
     {
-        "credentials_path": ".secret/credentials.json", // folder with credentialas.json
         "save_folder_path": "<better change this>",     // folder where images are saved
         "temp_folder_path": "./temp",                   // folder where images are saved during runtime
         "subreddits": [                                 // subreddits to parse
@@ -88,7 +89,9 @@ Make sure you have a __reddit account__ and __python 3.x installed__.
         "sort_type": "top",                             // how to sort submissions
         "limit": 10,                                    // how many submissions will be loaded
         "time_filter": "month",                         // top from 'time_filter'
-        "remove_duplicates": false                      // check for duplicates
+        "remove_duplicates": false,                     // check for duplicates
+        "use_api": false                                // use 'praw'
+        "credentials_path": ".secret/credentials.json", // folder with credentialas.json
     }
     ```
 2. After executing script will load the images to __"temp_folder"__:
