@@ -82,14 +82,15 @@ Now you need to get reddit api access (__you need to have reddit account__)
       -tf [TIME_FILTER], --time-filter [TIME_FILTER]
                             Only with sort-type top. Top from day, week, month, year or all.
       -rd, --remove-duplicates
-                            Script would not save duplicates of images in save-folder. 
+                            If present script would not save duplicates of images in save-folder. 
                             If you have a lot of images you will die before it finishes.
        -ua, --use-api       If present script would use 'praw' to parse reddit. 
                             Needs 'credentials.json' to be present.
       --credentials [PATH]  Folder with credentials.json.
       --save-folder [PATH]  Folder where immages would be saved.
       --temp-folder [PATH]  Temporary folder to save images. 
-                            WARNING: TEMPORARY FOLDER WOULD BE CLEARED!!!
+                            WARNING: After finishing loaded pictures in 
+                            this folder would be removed!
     ```
 
     Also, you can edit __settings.json__, but values passed as a parameter     __override__ values from __settings.json__
@@ -108,11 +109,11 @@ Now you need to get reddit api access (__you need to have reddit account__)
         "credentials_path": ".secret/credentials.json", // folder with credentialas.json
     }
     ```
-2. After executing script will load the images to __"temp_folder"__:
+1. After executing script will load the images to __"temp_folder"__:
  
    ![Image loading](https://imgur.com/SWpOmzt.png)
 
-3. Image viewer will open after all images are open:
+2. Image viewer will open after all images are open:
  
    ![Image Viewer](https://imgur.com/KBwex7c.png)
 
@@ -131,7 +132,7 @@ Now you need to get reddit api access (__you need to have reddit account__)
    | __CTRL+F__        | maximize window |
    | __CTRL+R__        | reload window   |
 
-4. After that chosen images would be saved to ```"save_folder"```. If ```-rt``` is present or ```"remove_duplicates"``` is set to ```true``` images that already exist in ```"save_folder"``` would not be saved.
+3. After that chosen images would be saved to ```"save_folder"```. If ```-rt``` is present or ```"remove_duplicates"``` is set to ```true``` images that already exist in ```"save_folder"``` would not be saved.
 
 ## Image Viewer settings
 Image viewer has it's own ```settings.json``` at ```wallpaper-finder/image_viewer```:

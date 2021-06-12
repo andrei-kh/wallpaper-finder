@@ -97,7 +97,8 @@ def arguments() -> dict:
         type=str,
         default=None,
         nargs='?',
-        help="Temporary folder to save images. WARNING: TEMPORARY FOLDER WOULD BE CLEARED!!!"
+        help="Temporary folder to save images. "
+        "WARNING: After finishing loaded pictures in this folder would be removed"
     )
 
     args = parser.parse_args()
@@ -109,24 +110,24 @@ def main(r_parser, remove_duplicates) -> None:
     """
     Driver code.
     """
-    r_parser.clear_folder(r_parser.temp_folder_path)
 
     r_parser.load_pictures(r_parser.subreddits)
 
     image_paths = r_parser.get_files_from_folder(r_parser.temp_folder_path)
     imageViewer = ImageViewer(image_paths, True)
 
-    chosen_images = imageViewer.run()
+    images_to_save = imageViewer.run()
 
-    if remove_duplicates and chosen_images:
-        images_to_save = r_parser.remove_duplicates(chosen_images,
+    if remove_duplicates and images_to_save:
+        images_to_save = r_parser.remove_duplicates(images_to_save,
                                                     r_parser.save_folder)
 
-        r_parser.move_images(images_to_save, r_parser.save_folder)
-    else:
-        r_parser.move_images(chosen_images, r_parser.save_folder)
+    left_over = r_parser.move_images(images_to_save, r_parser.save_folder)
 
-    r_parser.clear_folder(r_parser.temp_folder_path)
+    images_to_remove = [im for im in image_paths if im not in images_to_save]
+    images_to_remove += left_over
+
+    r_parser.remove_files(images_to_remove)
 
 
 if __name__ == "__main__":

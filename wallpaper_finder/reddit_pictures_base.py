@@ -6,7 +6,6 @@ from urllib.parse import urlparse
 from progress.bar import PixelBar, Bar
 
 import os
-import shutil
 
 
 class RedditPicturesBase:
@@ -33,13 +32,26 @@ class RedditPicturesBase:
         Saves image.
         """
         image = Image.open(requests.get(url, stream=True).raw)
-        image.save(os.path.join(self.temp_folder_path, name), icc_profile='')
+
+        file_path = os.path.join(self.temp_folder_path, name)
+        while os.path.isfile(file_path):
+            file_path = os.path.join(self.temp_folder_path, "new_" + name)
+
+        image.save(file_path, icc_profile='', quality=95, subsampling=0)
 
     def process_image_url(self, image_url) -> bool:
         """
         Checks if images has valid extension and saves it.
         """
-        image_name = urlparse(image_url).path.split('/')[-1]
+        parsed_url = urlparse(image_url)
+
+        if "imgur.com" == parsed_url.netloc:
+            if "/a/" in image_url:
+                return False
+
+            image_url = image_url.replace("imgur", "i.imgur") + ".png"
+
+        image_name = parsed_url.path.split('/')[-1]
 
         if image_name.split('.')[-1] in self.allowed_extensions:
             self.save_image_from_url(image_url, image_name)
@@ -54,6 +66,7 @@ class RedditPicturesBase:
         """
         Loads images from subreddits.
         """
+        errors = []
         for subreddit in subreddits:
             submissions = self.get_submissions(subreddit)
 
@@ -64,10 +77,8 @@ class RedditPicturesBase:
                     if not self.process_image_url(submission.url):
                         if submission.is_gallery:
                             self.process_gallery(submission)
-                except AttributeError:
-                    print("\nsubmission:"
-                          "\n{}\n"
-                          "dosen't have images with allowed extentions\n".format(submission.url))
+                except (AttributeError, OSError):
+                    errors.append(submission.url)
                 except UnidentifiedImageError as e:
                     print("oh no ( ͡• ͜ʖ ͡• )")
                     raise e
@@ -75,6 +86,11 @@ class RedditPicturesBase:
                 progress_bar.next()
 
             progress_bar.finish()
+
+        if errors:
+            print("Can't load this one's:")
+            for error in errors:
+                print(error)
 
     def process_gallery(self, submission) -> None:
         """
@@ -91,17 +107,12 @@ class RedditPicturesBase:
 
             self.process_image_url(image_url)
 
-    def clear_folder(self, folder_path) -> None:
+    def remove_files(self, to_remove) -> None:
         """
-        Clears 'folder_path'.
+        Removes files in 'to_remove'.
         """
-        for filename in os.listdir(folder_path):
-            file_path = os.path.join(folder_path, filename)
-
-            if os.path.isfile(file_path) or os.path.islink(file_path):
-                os.unlink(file_path)
-            elif os.path.isdir(file_path):
-                shutil.rmtree(file_path)
+        for file_path in to_remove:
+            os.unlink(file_path)
 
     def get_files_from_folder(self, folder_path) -> list:
         """
@@ -117,7 +128,7 @@ class RedditPicturesBase:
 
         return files
 
-    def move_images(self, paths, folder) -> None:
+    def move_images(self, paths, folder) -> list:
         """
         Moves images with 'paths' to 'folder'.
         """
@@ -147,6 +158,8 @@ class RedditPicturesBase:
             if files_existed:
                 for path in files_existed:
                     print(f"File {path} already exists. Did not move.")
+
+        return files_existed
 
     def remove_duplicates(self, images, folder) -> list:
         """
