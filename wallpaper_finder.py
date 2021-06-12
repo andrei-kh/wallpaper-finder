@@ -144,8 +144,8 @@ if __name__ == "__main__":
         if value is not None:
             settings[key] = value
 
-    if not os.path.isdir(settings["temp_folder"]):
-        os.mkdir(settings["temp_folder"])
+    if not os.path.isdir(settings["temp_folder_path"]):
+        os.mkdir(settings["temp_folder_path"])
 
     reddit_parser = None
     if settings["use_api"]:
