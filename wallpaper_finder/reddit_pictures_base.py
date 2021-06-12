@@ -1,4 +1,4 @@
-from PIL import Image, ImageChops
+from PIL import Image, ImageChops, UnidentifiedImageError
 
 import requests
 from urllib.parse import urlparse
@@ -60,14 +60,17 @@ class RedditPicturesBase:
             progress_bar = Bar(f"Loaded images from r/{subreddit}:", max=self.limit)
 
             for submission in submissions:
-                if not self.process_image_url(submission.url):
-                    try:
+                try:
+                    if not self.process_image_url(submission.url):
                         if submission.is_gallery:
                             self.process_gallery(submission)
-                    except AttributeError:
-                        print("\nsubmission:"
-                              "\n{}\n"
-                              "dosen't have images with allowed extentions\n".format(submission.url))
+                except AttributeError:
+                    print("\nsubmission:"
+                          "\n{}\n"
+                          "dosen't have images with allowed extentions\n".format(submission.url))
+                except UnidentifiedImageError as e:
+                    print("oh no ( ͡• ͜ʖ ͡• )")
+                    raise e
 
                 progress_bar.next()
 
@@ -82,6 +85,10 @@ class RedditPicturesBase:
 
         for item in gallery_items:
             image_url = media_metadata[item['media_id']]['s']['u']
+
+            # i don't know why
+            image_url = image_url.replace('amp;', '')
+
             self.process_image_url(image_url)
 
     def clear_folder(self, folder_path) -> None:
