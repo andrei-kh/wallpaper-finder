@@ -6,6 +6,7 @@ from urllib.parse import urlparse
 from progress.bar import PixelBar, Bar
 
 import os
+import warnings
 
 
 class RedditPicturesBase:
@@ -31,6 +32,7 @@ class RedditPicturesBase:
         """
         Saves image.
         """
+
         image = Image.open(requests.get(url, stream=True).raw)
 
         file_path = os.path.join(self.temp_folder_path, name)
@@ -66,6 +68,8 @@ class RedditPicturesBase:
         """
         Loads images from subreddits.
         """
+        warnings.simplefilter("error", Image.DecompressionBombWarning)
+
         errors = []
         for subreddit in subreddits:
             submissions = self.get_submissions(subreddit)
@@ -77,7 +81,7 @@ class RedditPicturesBase:
                     if not self.process_image_url(submission.url):
                         if submission.is_gallery:
                             self.process_gallery(submission)
-                except (AttributeError, OSError):
+                except (AttributeError, OSError, Image.DecompressionBombWarning):
                     errors.append(submission.url)
                 except UnidentifiedImageError as e:
                     print("oh no ( ͡• ͜ʖ ͡• )")
@@ -88,7 +92,7 @@ class RedditPicturesBase:
             progress_bar.finish()
 
         if errors:
-            print("Can't load this one's:")
+            print("Can't load")
             for error in errors:
                 print(error)
 
@@ -165,7 +169,7 @@ class RedditPicturesBase:
         """
         Returns list of paths without imagess from 'folder'.
         """
-        bar_lenght = len(images)
+        bar_lenght = len(images) * len(os.listdir(folder))
         progress_bar = PixelBar("Checking if duplicated:", max=bar_lenght)
 
         duplicates = []
@@ -185,7 +189,9 @@ class RedditPicturesBase:
                     duplicates.append((image_path, file_path))
                     break
 
-            progress_bar.next()
+                progress_bar.next()
+
+        progress_bar.finish()
 
         print()
         for duplicate, original in duplicates:

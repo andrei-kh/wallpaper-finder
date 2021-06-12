@@ -14,7 +14,8 @@ A simple app that lets you download wallpapers from reddit.
 
 ## Installation
 Make sure you have __python 3.x__ installed.<br>
-You can use it with or without api. I did not notice any difference between them.<br> 
+You can use it with or without api.<br> 
+__Without api number of images is capped at ~100.__<br>
 Using api requries __api keys__.
 
 ### Without reddit api

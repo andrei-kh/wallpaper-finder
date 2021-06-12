@@ -47,4 +47,7 @@ class RedditPictures(RedditPicturesBase):
 
             submissions.append(submission)
 
+        if self.limit > len(submissions):
+            print(f"Got only {len(submissions)} submissions")
+            self.limit = len(submissions)
         return submissions

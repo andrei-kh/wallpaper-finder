@@ -31,14 +31,18 @@ class RedditPicturesApi(RedditPicturesBase):
         """
 
         subreddit = self.reddit.subreddit(subreddit_name)
+        submissions = None
 
         if self.sort_type == "top":
-            return subreddit.top(self.time_filter, limit=self.limit)
+            submissions = subreddit.top(self.time_filter, limit=self.limit)
         elif self.sort_type == "hot":
-            return subreddit.hot(limit=self.limit)
+            submissions = subreddit.hot(limit=self.limit)
         elif self.sort_type == "new":
-            return subreddit.new(limit=self.limit)
+            submissions = subreddit.new(limit=self.limit)
         elif self.sort_type == "rising":
-            return subreddit.rising(limit=self.limit)
+            submissions = subreddit.rising(limit=self.limit)
 
-        return None
+        if submissions:
+            self.limit = submissions.limit
+
+        return submissions
