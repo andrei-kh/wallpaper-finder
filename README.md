@@ -96,7 +96,7 @@ Now you need to get reddit api access (__you need to have reddit account__)
     Also, you can edit __settings.json__, but values passed as a parameter     __override__ values from __settings.json__
     ```javascript
     {
-        "save_folder_path": "<better change this>",     // folder where images are saved
+        "save_folder_path": "./saved",                  // folder where images are saved
         "temp_folder_path": "./temp",                   // folder where images are saved during runtime
         "subreddits": [                                 // subreddits to parse
             "wallpaper"
