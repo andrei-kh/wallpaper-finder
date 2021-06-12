@@ -1,44 +1,47 @@
-# WALLPAPER FINDER
+# 🖼 WALLPAPER FINDER
+
 ![Example](https://imgur.com/qMSnoyR.png)
 
-A simple app that lets you download wallpapers from reddit.- 
+A simple app that lets you download wallpapers from reddit. 
 
-- [WALLPAPER FINDER](#wallpaper-finder)
+- [🖼 WALLPAPER FINDER](#-wallpaper-finder)
   - [Installation](#installation)
   - [Usage](#usage)
     - [Image viewer controls:](#image-viewer-controls)
   - [Image Viewer settings](#image-viewer-settings)
 
 ## Installation
-Make sure you have python 3.x installed.
+Make sure you have a __reddit account__ and __python 3.x installed__.
 
 1. Clone and install requirements
-```sh
-> git clone https://github.com/andreywastaken/wallpaper-finder.git
-> cd wallpaper-finder
+    ```sh
+    > git clone https://github.com/andreywastaken/wallpaper-finder.git
+    > cd wallpaper-finder
+    
+    > pip install -r requirements.txt
+    ```
 
-> pip install -r requirements.txt
-```
-
-2. Get reddit api access
+2. Get reddit api access (you need to have reddit account)
      1. Go to [reddit app preferences](https://www.reddit.com/prefs/apps) and click __create another app...__
    
-     2. Fill out the required details, select __script__ and click __create an application__
-    ![Reddit application](https://imgur.com/OIvQUQs.png)
+     2. Fill out the required details, select __script__ option and click __create an application__
+        
+        ![Reddit application](https://imgur.com/OIvQUQs.png)
 
      3. __script for personal use__ and __secret__ tokens are used to connect to reddit api.
-    ![Personal and Secret](https://imgur.com/sw6W1Qx.png)
+        
+        ![Personal and Secret](https://imgur.com/sw6W1Qx.png)
 
-     4. Create in __.secret__ create __credentials.json__ file
-        ```json like that:
+     4. Create in __.secret__ create __credentials.json__ file like that:
+        ```javascript 
         {
-        "client_id": "aB1cdeFghI23JK",               // short key one goes here
-        "api_key": "LMNopQrst4Uv5Wx67yZOHNOItseNds", // long key one goes here
+        "client_id": "aB1cdeFghI23JK",               // short key goes here
+        "api_key": "LMNopQrst4Uv5Wx67yZOHNOItseNds", // long key goes here
         "username": "<your reddit username>",        // reddit username goes her
         "password": "<your reddit password>"         // reddit password goes here
         }
         ```
-     5. You finished with installation. For test you can execute:
+     5. Now you finished with installation. For the test you can execute:
         ```python
         python wallpaper_finder.py
         ```
@@ -46,7 +49,7 @@ Make sure you have python 3.x installed.
 ## Usage
 1. Before running
    
-    You can run ```python wallpaper_finder.py -h``` or ```python wallpaper_finder.py -help``` to see help:
+    You can run ```python wallpaper_finder.py -h``` or ```python wallpaper_finder.py --help``` to see help:
 
     ```
     > python .\wallpaper_finder.py -h
@@ -63,34 +66,37 @@ Make sure you have python 3.x installed.
       -l [LIMIT], --limit [LIMIT]
                             How many images would be parsed.
       -tf [TIME_FILTER], --time-filter [TIME_FILTER]
-                            Only with sort-type top. Top from day, week,  month,   year or all.
+                            Only with sort-type top. Top from day, week, month, year or all.
       -rd, --remove-duplicates
-                            Script would not save duplicates of images in     save-folder. If you have a lot of
-                            images you will die before it finishes.
+                            Script would not save duplicates of images in save-folder. 
+                            If you have a lot of images you will die before it finishes.
       --credentials [PATH]  Folder with credentials.json.
       --save-folder [PATH]  Folder where immages would be saved.
-      --temp-folder [PATH]  Temporary folder to save images. WARNING:   TEMPORARY   FOLDER WOULD BE CLEARED!!!
+      --temp-folder [PATH]  Temporary folder to save images. 
+                            WARNING: TEMPORARY FOLDER WOULD BE CLEARED!!!
     ```
 
     Also, you can edit __settings.json__, but values passed as a parameter     __override__ values from __settings.json__
-    ```json
+    ```javascript
     {
-        "credentials_path": ".secret/credentials.json", // folder with    credentialas.json
-        "save_folder_path": "<better change this>",     // folder where   images  are  saved
-        "temp_folder_path": "./temp",                   // folder where   images  are saved during runtime
+        "credentials_path": ".secret/credentials.json", // folder with credentialas.json
+        "save_folder_path": "<better change this>",     // folder where images are saved
+        "temp_folder_path": "./temp",                   // folder where images are saved during runtime
         "subreddits": [                                 // subreddits to parse
             "wallpaper"
         ],
-        "sort_type": "top",                             // how to sort    submissions
-        "limit": 10,                                    // how many   submissions   will be loaded
-        "time_filter": "month",                         // top from   'time_filter'
-        "remove_duplicates": false                      // checks for   duplicates
+        "sort_type": "top",                             // how to sort submissions
+        "limit": 10,                                    // how many submissions will be loaded
+        "time_filter": "month",                         // top from 'time_filter'
+        "remove_duplicates": false                      // check for duplicates
     }
     ```
 2. After executing script will load the images:
+ 
    ![Image loading](https://imgur.com/SWpOmzt.png)
 
 3. Image viewer will open after all images are open:
+ 
    ![Image Viewer](https://imgur.com/KBwex7c.png)
 
    You can pick images you want to save with __ALT+X__ shortcut.
@@ -111,7 +117,7 @@ Make sure you have python 3.x installed.
 
 ## Image Viewer settings
 Image viewer has it's own ```settings.json``` at ```wallpaper-finder/image_viewer```:
-```json
+```javascript
 {
     "main_window": {
         "main_layout_margins": [0, 4, 0, 0], // Borders of the main layout (left, top, right, bottom)
