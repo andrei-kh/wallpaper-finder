@@ -1,2 +1,3 @@
-from .reddit_pictures import RedditPictures
-from .reddit_pictures_api import RedditPicturesApi
+from .reddit_pictures import RedditPicturesLoader
+from .reddit_pictures_api import RedditPicturesLoaderApi
+from .utils import FileUtils

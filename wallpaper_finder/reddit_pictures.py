@@ -1,4 +1,4 @@
-from .reddit_pictures_base import RedditPicturesBase
+from .reddit_pictures_base import RedditPicturesLoaderBase
 
 import requests
 import argparse
@@ -6,15 +6,13 @@ import argparse
 USER_AGENT = "Wallpaper finder"
 
 
-class RedditPictures(RedditPicturesBase):
-    def __init__(self, save_folder, temp_folder,
-                 subreddits=["wallpaper"], sort_type="top", limit=10,
-                 time_filter="month") -> None:
+class RedditPicturesLoader(RedditPicturesLoaderBase):
+    def __init__(self, subreddits=["wallpaper"], sort_type="top",
+                 limit=10, time_filter="month") -> None:
         """
         Used to parse and save images from reddit using 'praw' api.
         """
-        super().__init__(save_folder, temp_folder, subreddits,
-                         sort_type, limit, time_filter)
+        super().__init__(subreddits, sort_type, limit, time_filter)
 
     def get_subreddit(self, subbreddit_name) -> dict:
         """

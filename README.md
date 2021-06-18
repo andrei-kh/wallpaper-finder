@@ -1,6 +1,6 @@
 # 🖼 WALLPAPER FINDER
 
-![Example](https://imgur.com/qMSnoyR.png)
+![Example](https://imgur.com/nL2wYbY.png)
 
 A simple app that lets you download wallpapers from reddit. 
 
@@ -68,9 +68,9 @@ Now you need to get reddit api access (__you need to have reddit account__)
 
     ```
     > python .\wallpaper_finder.py -h
-    usage: wallpaper_finder.py [-h] [-s SUBREDDITS [SUBREDDITS ...]] [-st   [TYPE]  ] [-l [LIMIT]]
-                               [-tf [TIME_FILTER]] [-rd] [--credentials [PATH]  ]   [--save-folder [PATH]]
-                               [--temp-folder [PATH]]
+    usage: wallpaper_finder.py [-h] [-s SUBREDDITS [SUBREDDITS ...]] [-st [TYPE]] [-l [LIMIT]] [-tf [TIME_FILTER]]
+                               [-rd] [-ua] [-ae ALLOWED_EXTENSIONS [ALLOWED_EXTENSIONS ...]] [--credentials [PATH]]
+                               [--save-folder [PATH]] [--temp-folder [PATH]] [-v]
 
     optional arguments:
       -h, --help            show this help message and exit
@@ -79,19 +79,20 @@ Now you need to get reddit api access (__you need to have reddit account__)
       -st [TYPE], --sort-type [TYPE]
                             Sort type. Can be hot, new, top, rising.
       -l [LIMIT], --limit [LIMIT]
-                            How many images would be parsed.
+                            How many submissions would be parsed.
       -tf [TIME_FILTER], --time-filter [TIME_FILTER]
                             Only with sort-type top. Top from day, week, month, year or all.
       -rd, --remove-duplicates
-                            If present script would not save duplicates of images in save-folder. 
-                            If you have a lot of images you will die before it finishes.
-       -ua, --use-api       If present script would use 'praw' to parse reddit. 
+                            If present script would not save duplicates of images in save-folder.
+      -ua, --use-api        If present script would use 'praw' to parse reddit. 
                             Needs 'credentials.json' to be present.
+      -ae ALLOWED_EXTENSIONS [ALLOWED_EXTENSIONS ...], --allowed-extensions ALLOWED_EXTENSIONS [ALLOWED_EXTENSIONS ...]
+                            Images with only this extensions are allowed.
       --credentials [PATH]  Folder with credentials.json.
       --save-folder [PATH]  Folder where immages would be saved.
-      --temp-folder [PATH]  Temporary folder to save images. 
-                            WARNING: After finishing loaded pictures in 
-                            this folder would be removed!
+      --temp-folder [PATH]  Temporary folder to save images. WARNING: After finishing loaded pictures in this
+                            folder would be removed
+      -v, --verbose         Makes everything more verbose.                        
     ```
 
     Also, you can edit __settings.json__, but values passed as a parameter     __override__ values from __settings.json__
@@ -108,15 +109,21 @@ Now you need to get reddit api access (__you need to have reddit account__)
         "remove_duplicates": false,                     // check for duplicates
         "use_api": false                                // use 'praw'
         "credentials_path": ".secret/credentials.json", // folder with credentialas.json
+        "allowed_extensions": [                         // load images with this extensions.
+            ".png",
+            ".jpg",
+            ".jpeg",
+            ".bmp"
+        ]
     }
     ```
-1. After executing script will load the images to __"temp_folder"__:
+2. After executing script will load the images to __"temp_folder"__:
  
-   ![Image loading](https://imgur.com/SWpOmzt.png)
+   ![Image loading](https://imgur.com/PDpKCXc.png)
 
-2. Image viewer will open after all images are open:
+3. Image viewer will open after all images are open:
  
-   ![Image Viewer](https://imgur.com/KBwex7c.png)
+   ![Image Viewer](https://imgur.com/tzH2Z6d.png)
 
    You can pick images you want to save with __ALT+X__ shortcut.
 
@@ -133,7 +140,7 @@ Now you need to get reddit api access (__you need to have reddit account__)
    | __CTRL+F__        | maximize window |
    | __CTRL+R__        | reload window   |
 
-3. After that chosen images would be saved to ```"save_folder"```. If ```-rt``` is present or ```"remove_duplicates"``` is set to ```true``` images that already exist in ```"save_folder"``` would not be saved.
+4. After that chosen images would be saved to ```"save_folder"```. If ```-rt``` is present or ```"remove_duplicates"``` is set to ```true``` images that already exist in ```"save_folder"``` would not be saved. Speed of ```"remove_duplicates"``` is depends on number of pictures in you ```"save folder"```. On my machine it's ~500 pictures per minute.
 
 ## Image Viewer settings
 Image viewer has it's own ```settings.json``` at ```wallpaper-finder/image_viewer```:

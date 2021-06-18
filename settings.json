@@ -9,5 +9,11 @@
     "time_filter": "month",
     "remove_duplicates": false,
     "use_api": false,
-    "credentials_path": ".secret/credentials.json"
+    "credentials_path": ".secret/credentials.json",
+    "allowed_extensions": [
+        ".png",
+        ".jpg",
+        ".jpeg",
+        ".bmp"
+    ]
 }
