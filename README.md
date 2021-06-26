@@ -60,7 +60,7 @@ Now you need to get reddit api access (__you need to have reddit account__)
     You can run ```python wallpaper_finder.py -h``` or ```python wallpaper_finder.py --help``` to see help:
 
     ```
-    ➜  python .\wallpaper_finder.py -h
+    > python .\wallpaper_finder.py -h
     usage: wallpaper_finder.py [-h] [-s SUBREDDITS [SUBREDDITS ...]] [-st [TYPE]] [-l [LIMIT]]
                                [-tf [TIME_FILTER]] [-rd] [-nt [NUMBER_OF_THREADS]] [-ua]
                                [-ae ALLOWED_EXTENSIONS [ALLOWED_EXTENSIONS ...]]
