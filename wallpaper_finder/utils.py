@@ -1,17 +1,24 @@
 import os
+
 from alive_progress import alive_bar
-from PIL import Image
-from typing import Tuple
+
+from PIL import Image, UnidentifiedImageError
+
 import requests
+
+from uuid import uuid4
+
+from typing import Tuple
 
 
 class FileUtils:
     allowed_extensions = [".png", ".jpg", ".jpeg", ".bmp"]
     temp_folder_path = "./temp"
     save_folder_path = "./saved"
+    number_of_threads = 4
 
     @classmethod
-    def set_extensions(cls, extensions) -> None:
+    def set_extensions(cls, extensions: list) -> None:
         """
         Sets allowed image extensions.
         """
@@ -24,7 +31,7 @@ class FileUtils:
         cls.allowed_extensions = extensions
 
     @classmethod
-    def set_temp_folder_path(cls, path) -> None:
+    def set_temp_folder_path(cls, path: str) -> None:
         """
         Sets temp folder path.
         """
@@ -34,7 +41,7 @@ class FileUtils:
         cls.temp_folder_path = path
 
     @classmethod
-    def set_save_folder_path(cls, path) -> None:
+    def set_save_folder_path(cls, path: str) -> None:
         """
         Sets save folder path.
         """
@@ -44,7 +51,15 @@ class FileUtils:
         cls.save_folder_path = path
 
     @classmethod
-    def get_images_from_folder(cls, folder_path) -> list:
+    def set_number_of_threads(cls, num: int) -> None:
+        """
+        Sets number of threads for loading.
+        """
+
+        cls.number_of_threads = num
+
+    @classmethod
+    def get_images_from_folder(cls, folder_path: str) -> list:
         """
         Returns list of paths to images that have 'ALOWED_EXTENSION' in 'folder_path'.
         """
@@ -57,7 +72,7 @@ class FileUtils:
 
         return folder_images
 
-    def ahash(image_path, hashSize=10) -> str:
+    def ahash(image_path: str, hashSize: int = 10) -> str:
         """
         Calculates aproximate hash of image at 'image_path'.
         """
@@ -72,29 +87,34 @@ class FileUtils:
         return hex(int(bits, 2))[2:]
 
     @classmethod
-    def calculate_hashes(cls, images) -> Tuple[dict, list]:
+    def calculate_hashes(cls, images: list) -> Tuple[dict, list]:
         """
         Calculates hashes and finds duplicates of files in 'images'.
         """
         duplicates = []
         hashes = {}
 
-        with alive_bar(len(images), bar="filling", spinner="dots_reverse") as bar:
-            for image in images:
-                image_hash = cls.ahash(image)
+        if images:
+            with alive_bar(len(images), bar="filling", spinner="dots_reverse") as bar:
+                for image in images:
+                    try:
+                        image_hash = cls.ahash(image)
 
-                if hashes.get(image_hash):
-                    duplicates.append((hashes[image_hash], image))
-                else:
-                    hashes[image_hash] = image
+                        if hashes.get(image_hash):
+                            duplicates.append((image, hashes[image_hash], ))
+                        else:
+                            hashes[image_hash] = image
 
-                bar()
+                    except UnidentifiedImageError:
+                        duplicates.append((image, None))
+
+                    bar()
 
         return hashes, duplicates
 
-    def print_duplicates(duplicates, string) -> None:
+    def print_duplicates(duplicates: list, string: str) -> None:
         """
-        Prints list of duplicates.
+        Prints 'string' then "dup is a duplicate of orig" for dup, orig from 'duplicates'.
         """
         if duplicates:
             print(string)
@@ -105,25 +125,28 @@ class FileUtils:
             print()
 
     @classmethod
-    def find_duplicates(cls, folder1, folder2, verbose=False) -> Tuple[list, list]:
+    def find_duplicates(cls, image_paths: list, folder: str,
+                        string: str = "Image Paths", verbose=False) -> Tuple[list, list]:
         """
-        Returns list of paths from 'folder1' without images from 'folder2'.
+        Returns list of paths from image_paths without images from 'folder2'.
+
+        Image paths are displayed as 'string'. For example: Finding duplicates in 'string':.
         """
-        folder1_images = cls.get_images_from_folder(folder1)
-        folder2_images = cls.get_images_from_folder(folder2)
+        folder_images = cls.get_images_from_folder(folder)
 
-        folder1_name = os.path.basename(folder1)
-        folder2_name = os.path.basename(folder2)
+        folder_name = os.path.basename(folder)
 
-        print("Finding duplicates in '{}':".format(folder1_name))
-        f1_hashes, f1_duplicates = cls.calculate_hashes(folder1_images)
+        if image_paths:
+            print("Finding duplicates in '{}':".format(string))
+        f1_hashes, f1_duplicates = cls.calculate_hashes(image_paths)
 
-        print("Finding duplicates in '{}':".format(folder2_name))
-        f2_hashes, f2_duplicates = cls.calculate_hashes(folder2_images)
+        if folder_images:
+            print("Finding duplicates in '{}':".format(folder_name))
+        f2_hashes, f2_duplicates = cls.calculate_hashes(folder_images)
 
         result = []
         duplicates = []
-        print("Finding duplicates of '{}/*' in '{}'".format(folder1_name, folder2_name))
+        print("Finding duplicates of '{}/*' in '{}'".format(string, folder_name))
         with alive_bar(len(f1_hashes), bar="filling", spinner='dots_reverse') as bar:
             for im_hash in f1_hashes:
                 if f2_hashes.get(im_hash):
@@ -132,44 +155,65 @@ class FileUtils:
                     result.append(f1_hashes[im_hash])
                 bar()
 
+        print()
         if verbose:
-            print()
-            string = "Duplicates in '{}':".format(folder1_name)
-            cls.print_duplicates(f1_duplicates, string)
+            string_ = "Duplicates in '{}':".format(string)
+            cls.print_duplicates(f1_duplicates, string_)
 
-            string = "Duplicates in '{}':".format(folder2_name)
-            cls.print_duplicates(f2_duplicates, string)
+            string_ = "Duplicates in '{}':".format(folder_name)
+            cls.print_duplicates(f2_duplicates, string_)
 
-            string = "Duplicates of '{}/*' in '{}'".format(folder1_name, folder2_name)
-            cls.print_duplicates(duplicates, string)
+            string_ = "Duplicates of '{}/*' in '{}'".format(string_, folder_name)
+            cls.print_duplicates(duplicates, string_)
 
         duplicates = [e[0] for e in duplicates + f1_duplicates]
         return result, duplicates
 
     @classmethod
-    def save_image_from_url(cls, url, name) -> None:
+    def save_image_from_url(cls, url: str, name: str) -> str:
         """
-        Saves image.
+        Saves image located at 'url'.
         """
         if os.path.splitext(name)[1] not in cls.allowed_extensions:
             raise ValueError("Invalid extension to save")
 
-        image = Image.open(requests.get(url, stream=True).raw)
+        try:
+            raw_responce = requests.get(url, stream=True).raw
+        except requests.ConnectionError:
+            raise ValueError("Failed to establish connection to url.")
+
+        image = Image.open(raw_responce)
 
         file_path = os.path.join(cls.temp_folder_path, name)
-        while os.path.isfile(file_path):
-            file_path = os.path.join(cls.temp_folder_path, "new_" + name)
+        if os.path.isfile(file_path):
+            new_name = str(uuid4()) + "-" + name
+            file_path = os.path.join(cls.temp_folder_path, new_name)
 
-        image.save(file_path, icc_profile='', quality=95, subsampling=0)
+        try:
+            image.save(file_path, icc_profile='', quality=95, subsampling=0)
 
-    def remove_files(to_remove) -> None:
+            return file_path
+        except OSError:
+            image.convert("RGB").save(file_path, icc_profile='', quality=95, subsampling=0)
+
+            return file_path
+        except BaseException as e:
+            if os.path.isfile(file_path):
+                os.unlink(file_path)
+
+            raise e
+
+    def remove_files(to_remove: list) -> None:
         """
         Removes files in 'to_remove'.
         """
         for file_path in to_remove:
-            os.unlink(file_path)
+            try:
+                os.unlink(file_path)
+            except FileNotFoundError:
+                continue
 
-    def move_images(paths, folder, verbose=False) -> list:
+    def move_images(paths: list, folder: str, verbose: bool = False) -> list:
         """
         Moves images with 'paths' to 'folder'.
         """
@@ -193,11 +237,12 @@ class FileUtils:
 
                     bar()
 
+            print()
             if verbose:
-                print()
                 # if we got already existing files -> print them
                 if files_existed:
                     for path in files_existed:
                         print(f"File {path} already exists. Did not move.")
+                    print()
 
         return files_existed

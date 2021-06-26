@@ -1,8 +1,9 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QGraphicsScene, QGraphicsView
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QImage, QPixmap
 
 from .initializer import Config
+
 from typing import Optional
 
 
@@ -11,7 +12,10 @@ class ImageGraphicsView(QGraphicsView):
     Class that displays the pictures.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
+        """
+        GraphicsView that diplays pictures.
+        """
         QGraphicsView.__init__(self)
 
         # Setting style sheet
@@ -56,7 +60,7 @@ class ImageGraphicsView(QGraphicsView):
 
         self.fitInView(self.sceneRect(), self.aspectRatioMode)
 
-    def setImage(self, image) -> None:
+    def setImage(self, image: QImage) -> None:
         """
         Sets scene image.
         """

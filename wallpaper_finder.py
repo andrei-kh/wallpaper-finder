@@ -1,5 +1,6 @@
 import argparse
 import json
+import os
 
 from wallpaper_finder import RedditPicturesLoader, RedditPicturesLoaderApi, FileUtils
 from image_viewer import ImageViewer
@@ -60,12 +61,22 @@ def arguments() -> dict:
     )
 
     parser.add_argument(
+        "-nt",
+        "--number-of-threads",
+        type=int,
+        dest="number_of_threads",
+        default=None,
+        nargs='?',
+        help="Number of threads to use for loading images."
+    )
+
+    parser.add_argument(
         "-ua",
         "--use-api",
         action="store_true",
         default=None,
         dest="use_api",
-        help="If present script would use 'praw' to parse reddit. Needs 'credentials.json' to be present."
+        help="If present script would connect to reddit api. Needs 'credentials.json' to be present."
     )
 
     parser.add_argument(
@@ -94,7 +105,7 @@ def arguments() -> dict:
         type=str,
         default=None,
         nargs='?',
-        help="Folder where immages would be saved."
+        help="Folder where images would be saved."
     )
 
     parser.add_argument(
@@ -122,39 +133,36 @@ def arguments() -> dict:
     return vars(args)
 
 
-def main(r_parser, remove_duplicates, verbose) -> None:
-    """
-    Driver code.
-    """
+def main(r_parser: RedditPicturesLoader, remove_duplicates: bool, verbose: bool) -> None:
+    image_paths = []
+    try:
+        image_paths = r_parser.load_pictures(r_parser.subreddits, verbose)
 
-    r_parser.load_pictures(r_parser.subreddits, verbose)
+        imageViewer = ImageViewer(image_paths, True)
 
-    image_paths = FileUtils.get_images_from_folder(FileUtils.temp_folder_path)
-    imageViewer = ImageViewer(image_paths, True)
+        images_to_save = imageViewer.run()
 
-    images_to_save = imageViewer.run()
+        images_to_remove = [im for im in image_paths if im not in images_to_save]
 
-    images_to_remove = [im for im in image_paths if im not in images_to_save]
-    FileUtils.remove_files(images_to_remove)
+        if remove_duplicates and images_to_save:
+            images_to_save, images_to_remove_ = FileUtils.find_duplicates(images_to_save,
+                                                                          FileUtils.save_folder_path,
+                                                                          os.path.basename(FileUtils.temp_folder_path),
+                                                                          verbose)
 
-    if remove_duplicates and images_to_save:
-        images_to_save, images_to_remove = FileUtils.find_duplicates(FileUtils.temp_folder_path,
-                                                                     FileUtils.save_folder_path,
-                                                                     verbose)
-        
+            images_to_remove += images_to_remove_
+
+        images_to_remove += FileUtils.move_images(images_to_save,
+                                                  FileUtils.save_folder_path,
+                                                  verbose)
+
         FileUtils.remove_files(images_to_remove)
-
-    images_to_remove = FileUtils.move_images(images_to_save,
-                                             FileUtils.save_folder_path,
-                                             verbose)
-
-    FileUtils.remove_files(images_to_remove)
+    except (BaseException, KeyboardInterrupt) as e:
+        FileUtils.remove_files(image_paths)
+        raise e
 
 
 if __name__ == "__main__":
-    """
-    Setings, arguments and stuff.
-    """
     args = arguments()
 
     print("Starting...")
@@ -163,12 +171,13 @@ if __name__ == "__main__":
         settings = json.load(f)
 
     for key in settings:
-        if args[key] is not None:
+        if args.get(key) is not None:
             settings[key] = args[key]
 
     FileUtils.set_save_folder_path(settings["save_folder_path"])
     FileUtils.set_temp_folder_path(settings["temp_folder_path"])
     FileUtils.set_extensions(settings["allowed_extensions"])
+    FileUtils.set_number_of_threads(settings["number_of_threads"])
 
     reddit_parser = None
     if settings["use_api"]:
@@ -190,6 +199,6 @@ if __name__ == "__main__":
             limit=settings["limit"],
             time_filter=settings["time_filter"])
 
-    main(reddit_parser, settings["remove_duplicates"], args["verbose"])
+    main(reddit_parser, settings["remove_duplicates"], settings["verbose"])
 
     print("Done...")

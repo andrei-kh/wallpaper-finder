@@ -24,7 +24,7 @@ class BottomBarLayout(QHBoxLayout):
         self.counterLabel = QLabel()
         self.counterLabel.setFixedHeight(Config.BOTTOM_BAR_HEIGHT)
         self.counterLabel.setStyleSheet(Config.COUNTER_LABEL_STYLE_SHEET)
-        self.counterLabel.setAlignment(Qt.AlignRight)
+        self.counterLabel.setAlignment(Qt.AlignRight | Qt.AlignCenter)
 
         # Label for image resolution.
         self.resolutionLabel = QLabel()
@@ -35,7 +35,7 @@ class BottomBarLayout(QHBoxLayout):
         self.pickerBarLabel = QLabel()
         self.pickerBarLabel.setFixedHeight(Config.BOTTOM_BAR_HEIGHT)
         self.pickerBarLabel.setStyleSheet(Config.PICKER_BAR_STYLE_SHEET)
-        self.pickerBarLabel.setAlignment(Qt.AlignRight)
+        self.pickerBarLabel.setAlignment(Qt.AlignRight | Qt.AlignCenter)
 
         # Symbol that would be shown if image is picked.
         self.pickedSymbol = Config.PICKER_SYMBOL
@@ -46,19 +46,19 @@ class BottomBarLayout(QHBoxLayout):
         self.addWidget(self.pickerBarLabel)
         self.addWidget(self.counterLabel)
 
-    def changeNametext(self, text) -> None:
+    def changeNametext(self, text: str) -> None:
         """
         Changes text of the label with picture name.
         """
         self.nameLabel.setText(text)
 
-    def changeCounterText(self, text) -> None:
+    def changeCounterText(self, text: str) -> None:
         """
         Changes text of label with the counter.
         """
         self.counterLabel.setText(text)
 
-    def changeResolutionText(self, text) -> None:
+    def changeResolutionText(self, text: str) -> None:
         """
         Changes name of label with resolution.
         """

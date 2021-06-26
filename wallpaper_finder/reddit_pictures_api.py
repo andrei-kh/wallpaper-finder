@@ -1,47 +1,55 @@
-import praw
+import requests
 
-from typing import Optional
-
-from .reddit_pictures_base import RedditPicturesLoaderBase
-
-USER_AGENT = "Wallpaper finder"
+from .reddit_pictures import RedditPicturesLoader
 
 
-class RedditPicturesLoaderApi(RedditPicturesLoaderBase):
-    def __init__(self, credentials, subreddits=["wallpaper"],
-                 sort_type="top", limit=10, time_filter="month") -> None:
+class RedditPicturesLoaderApi(RedditPicturesLoader):
+    def __init__(self, credentials: dict,
+                 subreddits: list = ["wallpaper"], sort_type: str = "top",
+                 limit: int = 10, time_filter: str = "month") -> None:
         """
-        Used to parse and save images from reddit using 'praw' api.
+        Used to parse and save images with authorization to reddit api.
+
+        credentials: reddit api credentials.
+        subreddits: subreddits from which images are parsed.
+        sort_type: "hot", "new", "top", "rising".
+        limit: how much submissions to parse.
+        time_filter: "day", "week", "month", "year", "all".
         """
         super().__init__(subreddits, sort_type, limit, time_filter)
 
-        try:
-            self.reddit = praw.Reddit(client_id=credentials['client_id'],
-                                      client_secret=credentials['api_key'],
-                                      password=credentials['password'],
-                                      user_agent=USER_AGENT,
-                                      username=credentials['username'])
-        except ImportError:
-            print("To use api you need to install praw")
+        self.client_id = credentials["client_id"]
+        self.client_secret = credentials["client_secret"]
 
-    def get_submissions(self, subreddit_name) -> Optional["praw.models.listing.generator.ListingGenerator"]:
+        self.authorization = self.get_authorization()
+
+    def get_authorization_url(self) -> str:
+        return "https://www.reddit.com/api/v1/access_token"
+
+    def get_authorization(self) -> str:
         """
-        Get submissions from 'subreddit_name' with praw.
+        Authorizes in reddit api and returns authorization header.
         """
+        post_data = {"grant_type": "client_credentials"}
 
-        subreddit = self.reddit.subreddit(subreddit_name)
-        submissions = None
+        client_auth = requests.auth.HTTPBasicAuth(self.client_id,
+                                                  self.client_secret)
 
-        if self.sort_type == "top":
-            submissions = subreddit.top(self.time_filter, limit=self.limit)
-        elif self.sort_type == "hot":
-            submissions = subreddit.hot(limit=self.limit)
-        elif self.sort_type == "new":
-            submissions = subreddit.new(limit=self.limit)
-        elif self.sort_type == "rising":
-            submissions = subreddit.rising(limit=self.limit)
+        response = requests.post(self.get_authorization_url(),
+                                 auth=client_auth,
+                                 data=post_data,
+                                 headers={"User-Agent": "Wallpaper finder"})
 
-        if submissions:
-            self.limit = submissions.limit
+        r_json = response.json()
 
-        return submissions
+        return r_json["token_type"] + " " + r_json["access_token"]
+
+    def get_headers(self) -> dict:
+        headers = super().get_headers()
+
+        headers["authorization"] = self.authorization
+
+        return headers
+
+    def make_request_url(self, subreddit_name: str) -> str:
+        return f"https://oauth.reddit.com/r/{subreddit_name}/{self.sort_type}.json"

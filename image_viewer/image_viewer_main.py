@@ -2,9 +2,10 @@ from image_viewer.image_viewer_base import ImageViewerBase
 
 from PyQt5.QtWidgets import QApplication
 
-from typing import Optional
 import sys
 import os
+
+from typing import Optional
 
 
 def suppress_qt_warnings():
@@ -16,7 +17,8 @@ def suppress_qt_warnings():
 
 class ImageViewer:
 
-    def __init__(self, pathsToImages=list(), imagePickerToggle=False) -> None:
+    def __init__(self, pathsToImages: list = list(),
+                 imagePickerToggle: bool = False) -> None:
         """
         Wrapper for ImageViwerBase.
         """

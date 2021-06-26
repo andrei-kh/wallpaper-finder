@@ -21,9 +21,9 @@
         "top_border_size": 2,
         "top_border_color": "white",
 
-        "font_size": "11",
-        "font_weight": "bold",
-        "font_family": "Consolas"
+        "font_size": "12",
+        "font_weight": "medium",
+        "font_family": "Lemon"
     },
 
     "shortcuts":{

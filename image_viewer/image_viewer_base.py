@@ -17,12 +17,15 @@ import os
 class ImageViewerBase(QMainWindow):
     EXIT_CODE_REBOOT = -80084
 
-    def __init__(self, pathsToImages=list(), imagePickerToggle=False) -> None:
+    def __init__(self, pathsToImages: list = list(), imagePickerToggle: bool = False) -> None:
         """
         Simple image viewer made with PyQt.
 
         """
         QMainWindow.__init__(self)
+
+        # Loading settings from settings.json
+        Config.apply_settings()
 
         # QGraphicsView to display images
         self.imageGraphicsView = ImageGraphicsView()
@@ -107,8 +110,7 @@ class ImageViewerBase(QMainWindow):
 
 # Exits app with the exit code = EXIT_CODE_REBOOT
 
-    def reloadWindow(self):
-        Config.apply_settings()
+    def reloadWindow(self) -> None:
         qApp.exit(self.EXIT_CODE_REBOOT)
 
 # Image loading and setting
@@ -119,7 +121,7 @@ class ImageViewerBase(QMainWindow):
         """
         return self.pathsToImages[self.currentImageIndex]
 
-    def loadImageFromFile(self, filePath=None) -> QImage:
+    def loadImageFromFile(self, filePath: str = None) -> QImage:
         """
         Loads located at filePath.
         """
@@ -143,7 +145,7 @@ class ImageViewerBase(QMainWindow):
         self.imageGraphicsView.setImage(image)
         self.updateBottomBar(filePath)
 
-    def setImagePaths(self, filePaths=None) -> None:
+    def setImagePaths(self, filePaths: list = None) -> None:
         """
         Sets paths to images. Then displays first image.
         """
@@ -174,11 +176,11 @@ class ImageViewerBase(QMainWindow):
             self.currentImageIndex = (self.currentImageIndex - 1) % self.totalImages
             self.setLoadedImage()
 
-    def updateBottomBar(self, imagePath) -> None:
+    def updateBottomBar(self, imagePath: str) -> None:
         """
         Updates bottom bar.
         """
-        fileName = os.path.split(imagePath)[-1]
+        fileName = os.path.basename(imagePath)
         self.bottomBarLayout.changeNametext(fileName)
 
         w, h = self.imageGraphicsView.getPixmapSize()
@@ -196,7 +198,7 @@ class ImageViewerBase(QMainWindow):
         """
         return self.pickedImages is not None
 
-    def imageIsPicked(self, imagePath) -> bool:
+    def imageIsPicked(self, imagePath: str) -> bool:
         """
         Checks if displayed image is picked.
         """
@@ -242,7 +244,7 @@ class ImageViewerBase(QMainWindow):
             self.old_pos = event.pos()
         return super().mousePressEvent(event)
 
-    def mouseReleaseEvent(self, event):
+    def mouseReleaseEvent(self, event) -> None:
         if event.button() == Qt.LeftButton:
             self.old_pos = None
         return super().mouseReleaseEvent(event)

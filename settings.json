@@ -15,5 +15,7 @@
         ".jpg",
         ".jpeg",
         ".bmp"
-    ]
+    ],
+    "number_of_threads": 4,
+    "verbose": false
 }
