@@ -134,10 +134,13 @@ class FileUtils:
         """
         folder_images = cls.get_images_from_folder(folder)
 
+        if os.path.basename(folder) == '':
+            folder = folder[:-1]
+
         folder_name = os.path.basename(folder)
 
         if image_paths:
-            print("Finding duplicates in '{}':".format(string))
+            print("Finding duplicates in {}:".format(string))
         f1_hashes, f1_duplicates = cls.calculate_hashes(image_paths)
 
         if folder_images:
@@ -146,7 +149,7 @@ class FileUtils:
 
         result = []
         duplicates = []
-        print("Finding duplicates of '{}/*' in '{}'".format(string, folder_name))
+        print("Finding duplicates of '{}/*' in {}:".format(folder_name, string))
         with alive_bar(len(f1_hashes), bar="filling", spinner='dots_reverse') as bar:
             for im_hash in f1_hashes:
                 if f2_hashes.get(im_hash):

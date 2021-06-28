@@ -1,6 +1,5 @@
 import argparse
 import json
-import os
 
 from wallpaper_finder import RedditPicturesLoader, RedditPicturesLoaderApi, FileUtils
 from image_viewer import ImageViewer
@@ -147,7 +146,7 @@ def main(r_parser: RedditPicturesLoader, remove_duplicates: bool, verbose: bool)
         if remove_duplicates and images_to_save:
             images_to_save, images_to_remove_ = FileUtils.find_duplicates(images_to_save,
                                                                           FileUtils.save_folder_path,
-                                                                          os.path.basename(FileUtils.temp_folder_path),
+                                                                          "downloaded images",
                                                                           verbose)
 
             images_to_remove += images_to_remove_

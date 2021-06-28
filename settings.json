@@ -1,6 +1,6 @@
 {
-    "save_folder_path": "./saved",
-    "temp_folder_path": "./temp",
+    "save_folder_path": "./saved/",
+    "temp_folder_path": "./temp/",
     "subreddits": [
         "wallpaper"
     ],
