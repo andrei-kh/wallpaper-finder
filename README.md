@@ -127,16 +127,16 @@ Now you need to get reddit api access (__you need to have reddit account__)
 
    All shortcuts:
    ### Image viewer controls:
-   | Button            | Action          |
-   | ----------------- | --------------- |
-   | __Right arrow__   | next image      |
-   | __Left arrow__    | previous image  |
-   | __ESC or CTRL+Q__ | close viewer    |
-   | __ALT+X__         | pick image      |
-   | __ALT+A__         | pick all images |
-   | __CTRL+O__        | open files      |
-   | __CTRL+F__        | maximize window |
-   | __CTRL+R__        | reload window   |
+   | Button            | Action              |
+   | ----------------- | ------------------- |
+   | __Right arrow__   | next image          |
+   | __Left arrow__    | previous image      |
+   | __ESC or CTRL+Q__ | close viewer        |
+   | __ALT+X__         | pick image          |
+   | __ALT+A__         | pick all images     |
+   | __CTRL+O__        | open files          |
+   | __CTRL+F__        | toggles window size |
+   | __CTRL+R__        | reload window       |
 
 4. After that chosen images would be saved to ```"save_folder"```. If ```-rt``` is present or ```"remove_duplicates"``` is set to ```true``` images that already exist in ```"save_folder"``` would not be saved. Speed of ```"remove_duplicates"``` is depends on number of pictures in you ```"save folder"```. On my machine it's ~500 pictures per minute.
 

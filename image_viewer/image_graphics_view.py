@@ -39,7 +39,7 @@ class ImageGraphicsView(QGraphicsView):
 
     def hasImage(self) -> bool:
         """
-        Chescks if image is shown.
+        Checks if image is shown.
         """
         return self._pixmapHandle is not None
 

@@ -94,7 +94,7 @@ class ImageViewerBase(QMainWindow):
 
         # Maximized screen shortcut
         self.shortcutMaximize = QShortcut(QKeySequence(Config.MAXIMIZE_SHORTCUT), self)
-        self.shortcutMaximize.activated.connect(self.showMaximized)
+        self.shortcutMaximize.activated.connect(self.toggleMaximize)
 
         # Reload window shortcut
         self.shortcutReload = QShortcut(QKeySequence(Config.RELOAD_SHORTCUT), self)
@@ -108,10 +108,22 @@ class ImageViewerBase(QMainWindow):
             self.shortcutPick.activated.connect(self.tickCurrentImage)
             self.shortcutPickAll.activated.connect(self.tickAll)
 
-# Exits app with the exit code = EXIT_CODE_REBOOT
+# Utility
 
     def reloadWindow(self) -> None:
+        """
+        Exits app with the exit code = EXIT_CODE_REBOOT
+        """
         qApp.exit(self.EXIT_CODE_REBOOT)
+
+    def toggleMaximize(self) -> None:
+        """
+        Toggles window from size (from max size to normal).
+        """
+        if self.isMaximized():
+            self.showNormal()
+        else:
+            self.showMaximized()
 
 # Image loading and setting
 
